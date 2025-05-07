@@ -1,0 +1,76 @@
+@startuml CineVibe-Movie-Detail
+
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Content Provider" as Provider
+
+' Main use case
+rectangle "Movie Experience" {
+  usecase "View Movie Details" as UC_MovieDetails
+  
+  ' Movie details sub-usecases
+  usecase "View Overview" as UC_Overview
+  usecase "View Cast" as UC_Cast
+  usecase "View Reviews" as UC_Reviews
+  usecase "View Similar Movies" as UC_SimilarMovies
+  usecase "Watch Movie" as UC_Watch
+  usecase "Download Movie" as UC_Download
+  
+  ' Review actions
+  usecase "Create Review" as UC_CreateReview
+  usecase "Rate Movie" as UC_RateMovie
+  usecase "Like Review" as UC_LikeReview
+  usecase "Comment on Review" as UC_CommentReview
+  usecase "Mark Spoilers" as UC_MarkSpoilers
+  usecase "Save Movie" as UC_SaveMovie
+  
+  ' Relationships
+  UC_MovieDetails <|-- UC_Overview
+  UC_MovieDetails <|-- UC_Cast
+  UC_MovieDetails <|-- UC_Reviews
+  UC_MovieDetails <|-- UC_SimilarMovies
+  UC_MovieDetails <|-- UC_Watch
+  UC_MovieDetails <|-- UC_Download
+  
+  ' Include relationships
+  UC_CreateReview ..> UC_RateMovie : <<include>>
+  UC_CreateReview ..> UC_MarkSpoilers : <<optional>>
+  UC_Reviews ..> UC_LikeReview : <<extend>>
+  UC_Reviews ..> UC_CommentReview : <<extend>>
+  UC_MovieDetails ..> UC_SaveMovie : <<extend>>
+  
+  ' Additional usecases
+  usecase "Add to Watchlist" as UC_AddWatchlist
+  usecase "Share Movie" as UC_ShareMovie
+  
+  ' Extensions
+  UC_Overview .> UC_AddWatchlist : <<extend>>
+  UC_Overview .> UC_ShareMovie : <<extend>>
+  UC_Watch .> UC_ContinueWatching : <<include>>
+  
+  usecase "Track Watching Progress" as UC_ContinueWatching
+}
+
+' Actor relationships
+RegUser --> UC_MovieDetails
+RegUser --> UC_CreateReview
+RegUser --> UC_LikeReview
+RegUser --> UC_CommentReview
+RegUser --> UC_SaveMovie
+RegUser --> UC_AddWatchlist
+RegUser --> UC_ShareMovie
+RegUser --> UC_Watch
+RegUser --> UC_Download
+
+Guest --> UC_MovieDetails : limited access
+Guest --> UC_Overview : limited access
+Guest --> UC_Cast : limited access
+Guest --> UC_Reviews : view only
+Guest --> UC_Watch : limited content
+
+Provider --> UC_Watch : provide content
+Provider --> UC_Download : provide content
+
+@enduml

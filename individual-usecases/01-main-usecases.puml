@@ -1,0 +1,41 @@
+@startuml CineVibe-Main-UseCases
+
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Administrator" as Admin
+actor "System" as System
+
+' Main use cases
+rectangle "CineVibe System" {
+  usecase "Browse Movies" as UC_BrowseMovies
+  usecase "Social Interaction" as UC_SocialInteraction
+  usecase "User Management" as UC_UserManagement
+  usecase "Content Discovery" as UC_ContentDiscovery
+  usecase "Movie Watching" as UC_MovieWatching
+  usecase "User Profile" as UC_UserProfile
+  usecase "Notifications" as UC_Notifications
+  usecase "Search System" as UC_SearchSystem
+}
+
+' Relationships
+Guest --> UC_BrowseMovies
+Guest --> UC_SearchSystem
+Guest --> UC_ContentDiscovery : limited access
+
+RegUser --> UC_BrowseMovies
+RegUser --> UC_SocialInteraction
+RegUser --> UC_UserManagement
+RegUser --> UC_ContentDiscovery
+RegUser --> UC_MovieWatching
+RegUser --> UC_UserProfile
+RegUser --> UC_Notifications
+RegUser --> UC_SearchSystem
+
+Admin --> UC_UserManagement : manage users
+
+System --> UC_Notifications : generate
+System --> UC_ContentDiscovery : algorithm-based recommendations
+
+@enduml

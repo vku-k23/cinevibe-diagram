@@ -1,0 +1,72 @@
+@startuml CineVibe-Content-Discovery
+
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "System" as System
+
+' Core use case
+rectangle "Content Discovery" {
+  usecase "Browse Home" as UC_Home
+  
+  ' Home sub-usecases
+  usecase "View Trending Movies" as UC_Trending
+  usecase "View New Releases" as UC_NewReleases
+  usecase "Browse Categories" as UC_Categories
+  usecase "View Recommended" as UC_Recommended
+  usecase "Continue Watching" as UC_ContinueWatching
+  
+  ' Feed sub-usecases
+  usecase "Browse Feed" as UC_Feed
+  usecase "View Following Feed" as UC_Following
+  usecase "Discover New Content" as UC_Discover
+  usecase "Browse Movie Reviews" as UC_MovieReviews
+  usecase "Browse User Lists" as UC_Lists
+  
+  ' Relationships
+  UC_Home <|-- UC_Trending
+  UC_Home <|-- UC_NewReleases
+  UC_Home <|-- UC_Categories
+  UC_Home <|-- UC_Recommended
+  UC_Home <|-- UC_ContinueWatching
+  
+  UC_Feed <|-- UC_Following
+  UC_Feed <|-- UC_Discover
+  UC_Feed <|-- UC_MovieReviews
+  UC_Feed <|-- UC_Lists
+  
+  ' Include relationships
+  UC_ContinueWatching ..> UC_MovieWatching : <<include>>
+  UC_MovieReviews ..> UC_ViewReview : <<include>>
+  
+  ' Additional usecases
+  usecase "View Movie Details" as UC_MovieDetails
+  usecase "View Review" as UC_ViewReview
+  usecase "Interact with Content" as UC_InteractContent
+  usecase "Watch Movie" as UC_MovieWatching
+  
+  ' Extensions
+  UC_Recommended .> UC_MovieDetails : <<extend>>
+  UC_Trending .> UC_MovieDetails : <<extend>>
+  UC_NewReleases .> UC_MovieDetails : <<extend>>
+  UC_Categories .> UC_MovieDetails : <<extend>>
+  UC_Following .> UC_InteractContent : <<extend>>
+  UC_Discover .> UC_InteractContent : <<extend>>
+}
+
+' Actor relationships
+RegUser --> UC_Home
+RegUser --> UC_Feed
+RegUser --> UC_MovieDetails
+RegUser --> UC_InteractContent
+RegUser --> UC_MovieWatching
+RegUser --> UC_ViewReview
+
+Guest --> UC_Home : limited access
+Guest --> UC_MovieDetails : limited access
+Guest --> UC_ViewReview : limited access
+
+System --> UC_Recommended : generate
+
+@enduml

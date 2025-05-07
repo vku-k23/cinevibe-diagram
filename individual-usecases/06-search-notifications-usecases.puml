@@ -1,0 +1,89 @@
+@startuml CineVibe-Search-Notifications
+
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "System" as System
+
+' Main use cases
+rectangle "Search System" {
+  usecase "Search Content" as UC_Search
+  
+  ' Search sub-usecases
+  usecase "Search Movies" as UC_SearchMovies
+  usecase "Search People" as UC_SearchPeople
+  usecase "Search Users" as UC_SearchUsers
+  usecase "View Recent Searches" as UC_RecentSearches
+  
+  ' Search actions
+  usecase "Filter Search Results" as UC_FilterSearch
+  usecase "Sort Search Results" as UC_SortSearch
+  usecase "Save Search Query" as UC_SaveSearch
+  
+  ' Relationships
+  UC_Search <|-- UC_SearchMovies
+  UC_Search <|-- UC_SearchPeople
+  UC_Search <|-- UC_SearchUsers
+  UC_Search <|-- UC_RecentSearches
+  
+  ' Include/extend relationships
+  UC_SearchMovies ..> UC_FilterSearch : <<include>>
+  UC_SearchMovies ..> UC_SortSearch : <<include>>
+  UC_SearchPeople ..> UC_FilterSearch : <<include>>
+  UC_SearchPeople ..> UC_SortSearch : <<include>>
+  UC_SearchUsers ..> UC_FilterSearch : <<include>>
+  UC_SearchUsers ..> UC_SortSearch : <<include>>
+  UC_Search ..> UC_SaveSearch : <<extend>>
+}
+
+rectangle "Notifications System" {
+  usecase "View Notifications" as UC_ViewNotifications
+  
+  ' Notification sub-usecases
+  usecase "View All Notifications" as UC_AllNotifications
+  usecase "View Mentions" as UC_Mentions
+  usecase "View Likes" as UC_Likes
+  usecase "View Comments" as UC_Comments
+  usecase "View Follows" as UC_Follows
+  usecase "View Recommendations" as UC_Recommendations
+  
+  ' Notification actions
+  usecase "Mark as Read" as UC_MarkRead
+  usecase "Clear Notifications" as UC_ClearNotifications
+  usecase "Configure Notification Settings" as UC_NotificationSettings
+  
+  ' Relationships
+  UC_ViewNotifications <|-- UC_AllNotifications
+  UC_ViewNotifications <|-- UC_Mentions
+  UC_ViewNotifications <|-- UC_Likes
+  UC_ViewNotifications <|-- UC_Comments
+  UC_ViewNotifications <|-- UC_Follows
+  UC_ViewNotifications <|-- UC_Recommendations
+  
+  ' Include/extend relationships
+  UC_ViewNotifications ..> UC_MarkRead : <<include>>
+  UC_ViewNotifications ..> UC_ClearNotifications : <<extend>>
+  UC_ViewNotifications ..> UC_NotificationSettings : <<extend>>
+}
+
+' Actor relationships
+RegUser --> UC_Search
+RegUser --> UC_FilterSearch
+RegUser --> UC_SortSearch
+RegUser --> UC_SaveSearch
+RegUser --> UC_ViewNotifications
+RegUser --> UC_NotificationSettings
+
+Guest --> UC_Search : limited access
+Guest --> UC_FilterSearch
+Guest --> UC_SortSearch
+
+System --> UC_Recommendations : generate
+System --> UC_AllNotifications : generate
+System --> UC_Mentions : generate
+System --> UC_Likes : generate
+System --> UC_Comments : generate
+System --> UC_Follows : generate
+
+@enduml

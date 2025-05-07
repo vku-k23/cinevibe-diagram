@@ -1,0 +1,69 @@
+@startuml CineVibe-Social-Interaction
+
+
+' Define actors
+actor "Registered User" as RegUser
+
+' Main use case
+rectangle "Social Interactions" {
+  usecase "View User Profile" as UC_ViewUserProfile
+  
+  ' User profile sub-usecases
+  usecase "View User Posts" as UC_UserPosts
+  usecase "View User Reviews" as UC_UserReviews
+  usecase "View User Lists" as UC_UserLists
+  usecase "View User Followers" as UC_Followers
+  usecase "View User Following" as UC_Following
+  
+  ' Social actions
+  usecase "Follow User" as UC_FollowUser
+  usecase "Unfollow User" as UC_UnfollowUser
+  usecase "Like Content" as UC_LikeContent
+  usecase "Comment on Content" as UC_CommentContent
+  usecase "Share Content" as UC_ShareContent
+  usecase "Create List" as UC_CreateList
+  usecase "Add Movie to List" as UC_AddMovieList
+  
+  ' Relationships
+  UC_ViewUserProfile <|-- UC_UserPosts
+  UC_ViewUserProfile <|-- UC_UserReviews
+  UC_ViewUserProfile <|-- UC_UserLists
+  UC_ViewUserProfile <|-- UC_Followers
+  UC_ViewUserProfile <|-- UC_Following
+  
+  ' Include/extend relationships
+  UC_ViewUserProfile ..> UC_FollowUser : <<extend>>
+  UC_ViewUserProfile ..> UC_UnfollowUser : <<extend>>
+  
+  UC_UserPosts ..> UC_LikeContent : <<extend>>
+  UC_UserPosts ..> UC_CommentContent : <<extend>>
+  UC_UserPosts ..> UC_ShareContent : <<extend>>
+  
+  UC_UserReviews ..> UC_LikeContent : <<extend>>
+  UC_UserReviews ..> UC_CommentContent : <<extend>>
+  UC_UserReviews ..> UC_ShareContent : <<extend>>
+  
+  UC_UserLists ..> UC_LikeContent : <<extend>>
+  UC_UserLists ..> UC_CommentContent : <<extend>>
+  UC_UserLists ..> UC_ShareContent : <<extend>>
+  
+  ' Additional usecases
+  usecase "View Movie from List" as UC_ViewMovieFromList
+  usecase "Mention User" as UC_MentionUser
+  
+  UC_UserLists ..> UC_ViewMovieFromList : <<include>>
+  UC_CommentContent ..> UC_MentionUser : <<extend>>
+}
+
+' Actor relationships
+RegUser --> UC_ViewUserProfile
+RegUser --> UC_FollowUser
+RegUser --> UC_UnfollowUser
+RegUser --> UC_LikeContent
+RegUser --> UC_CommentContent
+RegUser --> UC_ShareContent
+RegUser --> UC_CreateList
+RegUser --> UC_AddMovieList
+RegUser --> UC_MentionUser
+
+@enduml

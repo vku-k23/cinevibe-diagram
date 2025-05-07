@@ -1,0 +1,68 @@
+@startuml CineVibe-User-Account
+
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Administrator" as Admin
+actor "System" as System
+
+' Main use case
+rectangle "User Management" {
+  usecase "Register Account" as UC_Register
+  usecase "Login" as UC_Login
+  usecase "Logout" as UC_Logout
+  usecase "Manage Profile" as UC_ManageProfile
+  
+  ' Profile management sub-usecases
+  usecase "View Account Info" as UC_AccountInfo
+  usecase "Edit Profile" as UC_EditProfile
+  usecase "Manage My Reviews" as UC_MyReviews
+  usecase "Manage My Lists" as UC_MyLists
+  usecase "Adjust App Settings" as UC_AppSettings
+  usecase "Access Help & Support" as UC_HelpSupport
+  usecase "Review Privacy & Terms" as UC_PrivacyTerms
+  
+  ' Additional actions
+  usecase "Reset Password" as UC_ResetPassword
+  usecase "Update Profile Picture" as UC_UpdateProfilePic
+  usecase "Manage Notifications Settings" as UC_ManageNotifications
+  usecase "Set Privacy Preferences" as UC_PrivacyPreferences
+  usecase "Delete Account" as UC_DeleteAccount
+  usecase "Verify Account" as UC_VerifyAccount
+  
+  ' Relationships
+  UC_ManageProfile <|-- UC_AccountInfo
+  UC_ManageProfile <|-- UC_EditProfile
+  UC_ManageProfile <|-- UC_MyReviews
+  UC_ManageProfile <|-- UC_MyLists
+  UC_ManageProfile <|-- UC_AppSettings
+  UC_ManageProfile <|-- UC_HelpSupport
+  UC_ManageProfile <|-- UC_PrivacyTerms
+  
+  ' Include/extend relationships
+  UC_Register ..> UC_VerifyAccount : <<include>>
+  UC_EditProfile ..> UC_UpdateProfilePic : <<extend>>
+  UC_AppSettings ..> UC_ManageNotifications : <<include>>
+  UC_AppSettings ..> UC_PrivacyPreferences : <<include>>
+  UC_AccountInfo ..> UC_DeleteAccount : <<extend>>
+  UC_AccountInfo ..> UC_ResetPassword : <<extend>>
+}
+
+' Actor relationships
+Guest --> UC_Register
+Guest --> UC_Login
+
+RegUser --> UC_Login
+RegUser --> UC_Logout
+RegUser --> UC_ManageProfile
+RegUser --> UC_ResetPassword
+RegUser --> UC_UpdateProfilePic
+RegUser --> UC_ManageNotifications
+RegUser --> UC_PrivacyPreferences
+RegUser --> UC_DeleteAccount
+
+Admin --> UC_ManageProfile : manage users
+System --> UC_VerifyAccount : process verification
+
+@enduml
