@@ -1,0 +1,109 @@
+@startuml
+
+!define RECTANGLE class
+
+actor User
+
+rectangle Home {
+  usecase "Trending Movies" as UC_Trending
+  usecase "New Releases" as UC_NewReleases
+  usecase "Categories" as UC_Categories
+  usecase "Recommended" as UC_Recommended
+  usecase "Continue Watching" as UC_ContinueWatching
+}
+
+rectangle Feed {
+  usecase "Following" as UC_Following
+  usecase "Discover" as UC_Discover
+  usecase "Movie Reviews" as UC_MovieReviews
+  usecase "Lists" as UC_Lists
+}
+
+rectangle Search {
+  usecase "Search Movies" as UC_SearchMovies
+  usecase "Search People" as UC_SearchPeople
+  usecase "Search Users" as UC_SearchUsers
+  usecase "Recent Searches" as UC_RecentSearches
+}
+
+rectangle Notifications {
+  usecase "All Notifications" as UC_AllNotifications
+  usecase "Mentions" as UC_Mentions
+  usecase "Likes" as UC_Likes
+  usecase "Comments" as UC_Comments
+  usecase "Follows" as UC_Follows
+  usecase "Recommendations" as UC_Recommendations
+}
+
+rectangle Profile {
+  usecase "Account Info" as UC_AccountInfo
+  usecase "Edit Profile" as UC_EditProfile
+  usecase "My Reviews" as UC_MyReviews
+  usecase "My Lists" as UC_MyLists
+  usecase "App Settings" as UC_AppSettings
+  usecase "Help & Support" as UC_HelpSupport
+  usecase "Privacy & Terms" as UC_PrivacyTerms
+}
+
+rectangle Movie {
+  usecase "Overview" as UC_Overview
+  usecase "Cast" as UC_Cast
+  usecase "Reviews" as UC_Reviews
+  usecase "Similar Movies" as UC_SimilarMovies
+  usecase "Watch" as UC_Watch
+  usecase "Download" as UC_Download
+}
+
+rectangle User {
+  usecase "User Posts" as UC_UserPosts
+  usecase "User Reviews" as UC_UserReviews
+  usecase "User Lists" as UC_UserLists
+  usecase "Followers" as UC_Followers
+  usecase "Following" as UC_UserFollowing
+}
+
+User --> UC_Trending
+User --> UC_NewReleases
+User --> UC_Categories
+User --> UC_Recommended
+User --> UC_ContinueWatching
+
+User --> UC_Following
+User --> UC_Discover
+User --> UC_MovieReviews
+User --> UC_Lists
+
+User --> UC_SearchMovies
+User --> UC_SearchPeople
+User --> UC_SearchUsers
+User --> UC_RecentSearches
+
+User --> UC_AllNotifications
+User --> UC_Mentions
+User --> UC_Likes
+User --> UC_Comments
+User --> UC_Follows
+User --> UC_Recommendations
+
+User --> UC_AccountInfo
+User --> UC_EditProfile
+User --> UC_MyReviews
+User --> UC_MyLists
+User --> UC_AppSettings
+User --> UC_HelpSupport
+User --> UC_PrivacyTerms
+
+User --> UC_Overview
+User --> UC_Cast
+User --> UC_Reviews
+User --> UC_SimilarMovies
+User --> UC_Watch
+User --> UC_Download
+
+User --> UC_UserPosts
+User --> UC_UserReviews
+User --> UC_UserLists
+User --> UC_Followers
+User --> UC_UserFollowing
+
+@enduml
