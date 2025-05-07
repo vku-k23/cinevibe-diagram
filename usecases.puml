@@ -1,109 +1,426 @@
-@startuml
+@startuml CineVibe-Main-UseCases
 
-!define RECTANGLE class
+!define RECTANGLE package
 
-actor User
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Administrator" as Admin
+actor "System" as System
 
-rectangle Home {
-  usecase "Trending Movies" as UC_Trending
-  usecase "New Releases" as UC_NewReleases
-  usecase "Categories" as UC_Categories
-  usecase "Recommended" as UC_Recommended
+' Main use cases
+rectangle "CineVibe System" {
+  usecase "Browse Movies" as UC_BrowseMovies
+  usecase "Social Interaction" as UC_SocialInteraction
+  usecase "User Management" as UC_UserManagement
+  usecase "Content Discovery" as UC_ContentDiscovery
+  usecase "Movie Watching" as UC_MovieWatching
+  usecase "User Profile" as UC_UserProfile
+  usecase "Notifications" as UC_Notifications
+  usecase "Search System" as UC_SearchSystem
+}
+
+' Relationships
+Guest --> UC_BrowseMovies
+Guest --> UC_SearchSystem
+Guest --> UC_ContentDiscovery : limited access
+
+RegUser --> UC_BrowseMovies
+RegUser --> UC_SocialInteraction
+RegUser --> UC_UserManagement
+RegUser --> UC_ContentDiscovery
+RegUser --> UC_MovieWatching
+RegUser --> UC_UserProfile
+RegUser --> UC_Notifications
+RegUser --> UC_SearchSystem
+
+Admin --> UC_UserManagement : manage users
+
+System --> UC_Notifications : generate
+System --> UC_ContentDiscovery : algorithm-based recommendations
+
+@enduml
+
+@startuml CineVibe-Content-Discovery
+
+!define RECTANGLE package
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "System" as System
+
+' Core use case
+rectangle "Content Discovery" {
+  usecase "Browse Home" as UC_Home
+  
+  ' Home sub-usecases
+  usecase "View Trending Movies" as UC_Trending
+  usecase "View New Releases" as UC_NewReleases
+  usecase "Browse Categories" as UC_Categories
+  usecase "View Recommended" as UC_Recommended
   usecase "Continue Watching" as UC_ContinueWatching
+  
+  ' Feed sub-usecases
+  usecase "Browse Feed" as UC_Feed
+  usecase "View Following Feed" as UC_Following
+  usecase "Discover New Content" as UC_Discover
+  usecase "Browse Movie Reviews" as UC_MovieReviews
+  usecase "Browse User Lists" as UC_Lists
+  
+  ' Relationships
+  UC_Home <|-- UC_Trending
+  UC_Home <|-- UC_NewReleases
+  UC_Home <|-- UC_Categories
+  UC_Home <|-- UC_Recommended
+  UC_Home <|-- UC_ContinueWatching
+  
+  UC_Feed <|-- UC_Following
+  UC_Feed <|-- UC_Discover
+  UC_Feed <|-- UC_MovieReviews
+  UC_Feed <|-- UC_Lists
+  
+  ' Include relationships
+  UC_ContinueWatching ..> UC_MovieWatching : <<include>>
+  UC_MovieReviews ..> UC_ViewReview : <<include>>
+  
+  ' Additional usecases
+  usecase "View Movie Details" as UC_MovieDetails
+  usecase "View Review" as UC_ViewReview
+  usecase "Interact with Content" as UC_InteractContent
+  usecase "Watch Movie" as UC_MovieWatching
+  
+  ' Extensions
+  UC_Recommended .> UC_MovieDetails : <<extend>>
+  UC_Trending .> UC_MovieDetails : <<extend>>
+  UC_NewReleases .> UC_MovieDetails : <<extend>>
+  UC_Categories .> UC_MovieDetails : <<extend>>
+  UC_Following .> UC_InteractContent : <<extend>>
+  UC_Discover .> UC_InteractContent : <<extend>>
 }
 
-rectangle Feed {
-  usecase "Following" as UC_Following
-  usecase "Discover" as UC_Discover
-  usecase "Movie Reviews" as UC_MovieReviews
-  usecase "Lists" as UC_Lists
+' Actor relationships
+RegUser --> UC_Home
+RegUser --> UC_Feed
+RegUser --> UC_MovieDetails
+RegUser --> UC_InteractContent
+RegUser --> UC_MovieWatching
+RegUser --> UC_ViewReview
+
+Guest --> UC_Home : limited access
+Guest --> UC_MovieDetails : limited access
+Guest --> UC_ViewReview : limited access
+
+System --> UC_Recommended : generate
+
+@enduml
+
+@startuml CineVibe-Movie-Detail
+
+!define RECTANGLE package
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Content Provider" as Provider
+
+' Main use case
+rectangle "Movie Experience" {
+  usecase "View Movie Details" as UC_MovieDetails
+  
+  ' Movie details sub-usecases
+  usecase "View Overview" as UC_Overview
+  usecase "View Cast" as UC_Cast
+  usecase "View Reviews" as UC_Reviews
+  usecase "View Similar Movies" as UC_SimilarMovies
+  usecase "Watch Movie" as UC_Watch
+  usecase "Download Movie" as UC_Download
+  
+  ' Review actions
+  usecase "Create Review" as UC_CreateReview
+  usecase "Rate Movie" as UC_RateMovie
+  usecase "Like Review" as UC_LikeReview
+  usecase "Comment on Review" as UC_CommentReview
+  usecase "Mark Spoilers" as UC_MarkSpoilers
+  usecase "Save Movie" as UC_SaveMovie
+  
+  ' Relationships
+  UC_MovieDetails <|-- UC_Overview
+  UC_MovieDetails <|-- UC_Cast
+  UC_MovieDetails <|-- UC_Reviews
+  UC_MovieDetails <|-- UC_SimilarMovies
+  UC_MovieDetails <|-- UC_Watch
+  UC_MovieDetails <|-- UC_Download
+  
+  ' Include relationships
+  UC_CreateReview ..> UC_RateMovie : <<include>>
+  UC_CreateReview ..> UC_MarkSpoilers : <<optional>>
+  UC_Reviews ..> UC_LikeReview : <<extend>>
+  UC_Reviews ..> UC_CommentReview : <<extend>>
+  UC_MovieDetails ..> UC_SaveMovie : <<extend>>
+  
+  ' Additional usecases
+  usecase "Add to Watchlist" as UC_AddWatchlist
+  usecase "Share Movie" as UC_ShareMovie
+  
+  ' Extensions
+  UC_Overview .> UC_AddWatchlist : <<extend>>
+  UC_Overview .> UC_ShareMovie : <<extend>>
+  UC_Watch .> UC_ContinueWatching : <<include>>
+  
+  usecase "Track Watching Progress" as UC_ContinueWatching
 }
 
-rectangle Search {
+' Actor relationships
+RegUser --> UC_MovieDetails
+RegUser --> UC_CreateReview
+RegUser --> UC_LikeReview
+RegUser --> UC_CommentReview
+RegUser --> UC_SaveMovie
+RegUser --> UC_AddWatchlist
+RegUser --> UC_ShareMovie
+RegUser --> UC_Watch
+RegUser --> UC_Download
+
+Guest --> UC_MovieDetails : limited access
+Guest --> UC_Overview : limited access
+Guest --> UC_Cast : limited access
+Guest --> UC_Reviews : view only
+Guest --> UC_Watch : limited content
+
+Provider --> UC_Watch : provide content
+Provider --> UC_Download : provide content
+
+@enduml
+
+@startuml CineVibe-Social-Interaction
+
+!define RECTANGLE package
+
+' Define actors
+actor "Registered User" as RegUser
+
+' Main use case
+rectangle "Social Interactions" {
+  usecase "View User Profile" as UC_ViewUserProfile
+  
+  ' User profile sub-usecases
+  usecase "View User Posts" as UC_UserPosts
+  usecase "View User Reviews" as UC_UserReviews
+  usecase "View User Lists" as UC_UserLists
+  usecase "View User Followers" as UC_Followers
+  usecase "View User Following" as UC_Following
+  
+  ' Social actions
+  usecase "Follow User" as UC_FollowUser
+  usecase "Unfollow User" as UC_UnfollowUser
+  usecase "Like Content" as UC_LikeContent
+  usecase "Comment on Content" as UC_CommentContent
+  usecase "Share Content" as UC_ShareContent
+  usecase "Create List" as UC_CreateList
+  usecase "Add Movie to List" as UC_AddMovieList
+  
+  ' Relationships
+  UC_ViewUserProfile <|-- UC_UserPosts
+  UC_ViewUserProfile <|-- UC_UserReviews
+  UC_ViewUserProfile <|-- UC_UserLists
+  UC_ViewUserProfile <|-- UC_Followers
+  UC_ViewUserProfile <|-- UC_Following
+  
+  ' Include/extend relationships
+  UC_ViewUserProfile ..> UC_FollowUser : <<extend>>
+  UC_ViewUserProfile ..> UC_UnfollowUser : <<extend>>
+  
+  UC_UserPosts ..> UC_LikeContent : <<extend>>
+  UC_UserPosts ..> UC_CommentContent : <<extend>>
+  UC_UserPosts ..> UC_ShareContent : <<extend>>
+  
+  UC_UserReviews ..> UC_LikeContent : <<extend>>
+  UC_UserReviews ..> UC_CommentContent : <<extend>>
+  UC_UserReviews ..> UC_ShareContent : <<extend>>
+  
+  UC_UserLists ..> UC_LikeContent : <<extend>>
+  UC_UserLists ..> UC_CommentContent : <<extend>>
+  UC_UserLists ..> UC_ShareContent : <<extend>>
+  
+  ' Additional usecases
+  usecase "View Movie from List" as UC_ViewMovieFromList
+  usecase "Mention User" as UC_MentionUser
+  
+  UC_UserLists ..> UC_ViewMovieFromList : <<include>>
+  UC_CommentContent ..> UC_MentionUser : <<extend>>
+}
+
+' Actor relationships
+RegUser --> UC_ViewUserProfile
+RegUser --> UC_FollowUser
+RegUser --> UC_UnfollowUser
+RegUser --> UC_LikeContent
+RegUser --> UC_CommentContent
+RegUser --> UC_ShareContent
+RegUser --> UC_CreateList
+RegUser --> UC_AddMovieList
+RegUser --> UC_MentionUser
+
+@enduml
+
+@startuml CineVibe-User-Account
+
+!define RECTANGLE package
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "Administrator" as Admin
+actor "System" as System
+
+' Main use case
+rectangle "User Management" {
+  usecase "Register Account" as UC_Register
+  usecase "Login" as UC_Login
+  usecase "Logout" as UC_Logout
+  usecase "Manage Profile" as UC_ManageProfile
+  
+  ' Profile management sub-usecases
+  usecase "View Account Info" as UC_AccountInfo
+  usecase "Edit Profile" as UC_EditProfile
+  usecase "Manage My Reviews" as UC_MyReviews
+  usecase "Manage My Lists" as UC_MyLists
+  usecase "Adjust App Settings" as UC_AppSettings
+  usecase "Access Help & Support" as UC_HelpSupport
+  usecase "Review Privacy & Terms" as UC_PrivacyTerms
+  
+  ' Additional actions
+  usecase "Reset Password" as UC_ResetPassword
+  usecase "Update Profile Picture" as UC_UpdateProfilePic
+  usecase "Manage Notifications Settings" as UC_ManageNotifications
+  usecase "Set Privacy Preferences" as UC_PrivacyPreferences
+  usecase "Delete Account" as UC_DeleteAccount
+  usecase "Verify Account" as UC_VerifyAccount
+  
+  ' Relationships
+  UC_ManageProfile <|-- UC_AccountInfo
+  UC_ManageProfile <|-- UC_EditProfile
+  UC_ManageProfile <|-- UC_MyReviews
+  UC_ManageProfile <|-- UC_MyLists
+  UC_ManageProfile <|-- UC_AppSettings
+  UC_ManageProfile <|-- UC_HelpSupport
+  UC_ManageProfile <|-- UC_PrivacyTerms
+  
+  ' Include/extend relationships
+  UC_Register ..> UC_VerifyAccount : <<include>>
+  UC_EditProfile ..> UC_UpdateProfilePic : <<extend>>
+  UC_AppSettings ..> UC_ManageNotifications : <<include>>
+  UC_AppSettings ..> UC_PrivacyPreferences : <<include>>
+  UC_AccountInfo ..> UC_DeleteAccount : <<extend>>
+  UC_AccountInfo ..> UC_ResetPassword : <<extend>>
+}
+
+' Actor relationships
+Guest --> UC_Register
+Guest --> UC_Login
+
+RegUser --> UC_Login
+RegUser --> UC_Logout
+RegUser --> UC_ManageProfile
+RegUser --> UC_ResetPassword
+RegUser --> UC_UpdateProfilePic
+RegUser --> UC_ManageNotifications
+RegUser --> UC_PrivacyPreferences
+RegUser --> UC_DeleteAccount
+
+Admin --> UC_ManageProfile : manage users
+System --> UC_VerifyAccount : process verification
+
+@enduml
+
+@startuml CineVibe-Search-Notifications
+
+!define RECTANGLE package
+
+' Define actors
+actor "Registered User" as RegUser
+actor "Guest User" as Guest
+actor "System" as System
+
+' Main use cases
+rectangle "Search System" {
+  usecase "Search Content" as UC_Search
+  
+  ' Search sub-usecases
   usecase "Search Movies" as UC_SearchMovies
   usecase "Search People" as UC_SearchPeople
   usecase "Search Users" as UC_SearchUsers
-  usecase "Recent Searches" as UC_RecentSearches
+  usecase "View Recent Searches" as UC_RecentSearches
+  
+  ' Search actions
+  usecase "Filter Search Results" as UC_FilterSearch
+  usecase "Sort Search Results" as UC_SortSearch
+  usecase "Save Search Query" as UC_SaveSearch
+  
+  ' Relationships
+  UC_Search <|-- UC_SearchMovies
+  UC_Search <|-- UC_SearchPeople
+  UC_Search <|-- UC_SearchUsers
+  UC_Search <|-- UC_RecentSearches
+  
+  ' Include/extend relationships
+  UC_SearchMovies ..> UC_FilterSearch : <<include>>
+  UC_SearchMovies ..> UC_SortSearch : <<include>>
+  UC_SearchPeople ..> UC_FilterSearch : <<include>>
+  UC_SearchPeople ..> UC_SortSearch : <<include>>
+  UC_SearchUsers ..> UC_FilterSearch : <<include>>
+  UC_SearchUsers ..> UC_SortSearch : <<include>>
+  UC_Search ..> UC_SaveSearch : <<extend>>
 }
 
-rectangle Notifications {
-  usecase "All Notifications" as UC_AllNotifications
-  usecase "Mentions" as UC_Mentions
-  usecase "Likes" as UC_Likes
-  usecase "Comments" as UC_Comments
-  usecase "Follows" as UC_Follows
-  usecase "Recommendations" as UC_Recommendations
+rectangle "Notifications System" {
+  usecase "View Notifications" as UC_ViewNotifications
+  
+  ' Notification sub-usecases
+  usecase "View All Notifications" as UC_AllNotifications
+  usecase "View Mentions" as UC_Mentions
+  usecase "View Likes" as UC_Likes
+  usecase "View Comments" as UC_Comments
+  usecase "View Follows" as UC_Follows
+  usecase "View Recommendations" as UC_Recommendations
+  
+  ' Notification actions
+  usecase "Mark as Read" as UC_MarkRead
+  usecase "Clear Notifications" as UC_ClearNotifications
+  usecase "Configure Notification Settings" as UC_NotificationSettings
+  
+  ' Relationships
+  UC_ViewNotifications <|-- UC_AllNotifications
+  UC_ViewNotifications <|-- UC_Mentions
+  UC_ViewNotifications <|-- UC_Likes
+  UC_ViewNotifications <|-- UC_Comments
+  UC_ViewNotifications <|-- UC_Follows
+  UC_ViewNotifications <|-- UC_Recommendations
+  
+  ' Include/extend relationships
+  UC_ViewNotifications ..> UC_MarkRead : <<include>>
+  UC_ViewNotifications ..> UC_ClearNotifications : <<extend>>
+  UC_ViewNotifications ..> UC_NotificationSettings : <<extend>>
 }
 
-rectangle Profile {
-  usecase "Account Info" as UC_AccountInfo
-  usecase "Edit Profile" as UC_EditProfile
-  usecase "My Reviews" as UC_MyReviews
-  usecase "My Lists" as UC_MyLists
-  usecase "App Settings" as UC_AppSettings
-  usecase "Help & Support" as UC_HelpSupport
-  usecase "Privacy & Terms" as UC_PrivacyTerms
-}
+' Actor relationships
+RegUser --> UC_Search
+RegUser --> UC_FilterSearch
+RegUser --> UC_SortSearch
+RegUser --> UC_SaveSearch
+RegUser --> UC_ViewNotifications
+RegUser --> UC_NotificationSettings
 
-rectangle Movie {
-  usecase "Overview" as UC_Overview
-  usecase "Cast" as UC_Cast
-  usecase "Reviews" as UC_Reviews
-  usecase "Similar Movies" as UC_SimilarMovies
-  usecase "Watch" as UC_Watch
-  usecase "Download" as UC_Download
-}
+Guest --> UC_Search : limited access
+Guest --> UC_FilterSearch
+Guest --> UC_SortSearch
 
-rectangle User {
-  usecase "User Posts" as UC_UserPosts
-  usecase "User Reviews" as UC_UserReviews
-  usecase "User Lists" as UC_UserLists
-  usecase "Followers" as UC_Followers
-  usecase "Following" as UC_UserFollowing
-}
-
-User --> UC_Trending
-User --> UC_NewReleases
-User --> UC_Categories
-User --> UC_Recommended
-User --> UC_ContinueWatching
-
-User --> UC_Following
-User --> UC_Discover
-User --> UC_MovieReviews
-User --> UC_Lists
-
-User --> UC_SearchMovies
-User --> UC_SearchPeople
-User --> UC_SearchUsers
-User --> UC_RecentSearches
-
-User --> UC_AllNotifications
-User --> UC_Mentions
-User --> UC_Likes
-User --> UC_Comments
-User --> UC_Follows
-User --> UC_Recommendations
-
-User --> UC_AccountInfo
-User --> UC_EditProfile
-User --> UC_MyReviews
-User --> UC_MyLists
-User --> UC_AppSettings
-User --> UC_HelpSupport
-User --> UC_PrivacyTerms
-
-User --> UC_Overview
-User --> UC_Cast
-User --> UC_Reviews
-User --> UC_SimilarMovies
-User --> UC_Watch
-User --> UC_Download
-
-User --> UC_UserPosts
-User --> UC_UserReviews
-User --> UC_UserLists
-User --> UC_Followers
-User --> UC_UserFollowing
+System --> UC_Recommendations : generate
+System --> UC_AllNotifications : generate
+System --> UC_Mentions : generate
+System --> UC_Likes : generate
+System --> UC_Comments : generate
+System --> UC_Follows : generate
 
 @enduml
